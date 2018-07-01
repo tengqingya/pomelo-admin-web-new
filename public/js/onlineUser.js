@@ -70,20 +70,55 @@ setInterval(function() {
 		var totalConnCount = 0, loginedCount = 0, info, list = [];
 		var msg2=msg;
 		for(var sid in msg2) {
+			console.log("------------" + sid);
 			info = msg2[sid];
-			totalConnCount += msg2[sid].totalConnCount;
-			loginedCount += msg2[sid].loginedCount;
-			var lists = msg2[sid].loginedList;
-			for(var i=0;i<lists.length;i++){
-				list.push({
-					address : lists[i].address,
-					serverId : sid,
-					username : lists[i].username,
-					loginTime : new Date(parseInt(lists[i].loginTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " "),
-                uid : lists[i].uid
-				});
+            /**
+			 * {
+					"connector-server-2": {
+					"serverId": "connector-server-2",
+					"totalConnCount": 0,
+					"loginedCount": 0,
+					"loginedList": []
+					},
+					"connector-server-3": {
+					"serverId": "connector-server-3",
+					"totalConnCount": 0,
+					"loginedCount": 0,
+					"loginedList": []
+					},
+					"connector-server-1": {
+					"serverId": "connector-server-1",
+					"totalConnCount": 0,
+					"loginedCount": 1,
+					"loginedList": [
+					{
+					"loginTime": 1530423576927,
+					"uid": "A113516479",
+					"address": "::ffff:172.17.132.172:61183"
+					}
+					]
+					}
+					}
+             */
+			console.log("-----------"+ JSON.stringify(info))
+
+			for(var  connector in info){
+                totalConnCount += info[connector].totalConnCount;
+                loginedCount += info[connector].loginedCount;
+                var lists = info[connector].loginedList;
+                if(!!lists){
+                    for(var i=0;i<lists.length;i++){
+                        list.push({
+                            address : lists[i].address,
+                            serverId : connector,
+                            username : lists[i].username,
+                            loginTime : new Date(parseInt(lists[i].loginTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " "),
+                            uid : lists[i].uid
+                        });
+                    }
+				}
 			}
-		}	
+		}
 
 		contentUpdate(totalConnCount, loginedCount);
 
